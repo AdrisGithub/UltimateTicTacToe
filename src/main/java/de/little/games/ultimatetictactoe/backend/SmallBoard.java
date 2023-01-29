@@ -1,5 +1,7 @@
 package de.little.games.ultimatetictactoe.backend;
 
+import de.little.games.ultimatetictactoe.frontend.TicTacToeApplication;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
@@ -35,12 +37,56 @@ public class SmallBoard {
         miniBoard[xPos][yPos].setOwner(Player);
         return true;
     }
-    public char hasAWinner(){
-        //Todo Code schreiben der schaut ob da ein gewinner drin ist wenn ja welcher
-        return ' ';
+    public boolean hasAWinner(char player){
+        if(IsSet())return true;
+        if(checkRows()||checkColumns()||checkDiagonal()){
+            setWinner(player);
+            return true;
+        }
+        return false;
     }
+    public boolean IsSet(){
+        return winner != ' ';
+    }
+
+    public char getOwner() {
+        return winner;
+    }
+
+    private boolean checkDiagonal() {
+        if(miniBoard[0][0].getOwner()== miniBoard[1][1].getOwner() &&miniBoard[1][1].getOwner()==miniBoard[2][2].getOwner()&& miniBoard[2][2].IsSet()) return true;
+        if(miniBoard[0][2].getOwner()== miniBoard[1][1].getOwner() &&miniBoard[1][1].getOwner()==miniBoard[2][0].getOwner()&& miniBoard[2][0].IsSet()) return true;
+        return false;
+    }
+
+    private boolean checkColumns() {
+        for (int i=0;i<miniBoard.length;i++){
+            if(miniBoard[1][i].getOwner()== miniBoard[2][i].getOwner() && miniBoard[2][i].getOwner()==miniBoard[0][i].getOwner() && miniBoard[0][i].IsSet()) return true;
+        }
+        return false;
+    }
+
+    private boolean checkRows() {
+        for (Cell[] cells : miniBoard) {
+            if (cells[1].getOwner() == cells[2].getOwner() && cells[2].getOwner() == cells[0].getOwner()&& cells[0].IsSet()) return true;
+        }
+        return false;
+    }
+
     public void changeOpacity(double val){
         imageView.setOpacity(val);
     }
 
+    public boolean isFull() {
+        for (Cell[] cells: miniBoard){
+            for (Cell cell:cells){
+                if (!cell.IsSet()) return false;
+            }
+        }
+        return true;
+    }
+    public void setWinner(char o){
+        this.winner = o;
+        this.imageView.setImage(new Image(TicTacToeApplication.toAbsolutePath("src/main/resources/de/little/games/ultimatetictactoe/images/"+o+".png")));
+    }
 }
